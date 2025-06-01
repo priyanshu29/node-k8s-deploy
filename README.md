@@ -83,4 +83,4 @@ Sync policy can be set to Manual or Automatic in ArgoCD.
 This repo is only for deployment manifests. The source code for the Node.js app lives elsewhere.
 
 🧑‍💻 Author
-
+Priyanshu Tiwari
