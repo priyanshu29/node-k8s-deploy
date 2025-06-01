@@ -55,7 +55,7 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - service.yaml
-  - 
+
 📡 ArgoCD Setup Reference
 To deploy this app via ArgoCD UI:
 
