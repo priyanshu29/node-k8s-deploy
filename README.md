@@ -50,20 +50,20 @@ node-k8s-deploy/
 
 ## 📦 Example: Kustomization File
 
-
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - deployment.yaml
   - service.yaml
+  - 
 📡 ArgoCD Setup Reference
-To deploy this app via ArgoCD:
+To deploy this app via ArgoCD UI:
 
 Application Name: node-app
 
 Project: default
 
-Repo URL: <this-repo-url>
+Repo URL: https://github.com/priyanshu29/node-k8s-deploy.git
 
 Revision: main
 
