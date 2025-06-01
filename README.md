@@ -38,8 +38,8 @@ This repo contains:
 
 ## 🗂️ Directory Structure
 
-node-k8s-deploy/
- deployment/
+node-k8s-deploy
+ deployment
   -deployment.yaml
   -service.yaml
   -kustomization.yaml
