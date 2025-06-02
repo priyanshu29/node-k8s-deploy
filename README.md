@@ -84,3 +84,15 @@ This repo is only for deployment manifests. The source code for the Node.js app 
 
 🧑‍💻 Author  
 Priyanshu Tiwari
+
+
+
+providers:
+  - name: 'default'
+    orgId: 1
+    folder: ''
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    options:
+      path: /var/lib/grafana/dashboards
