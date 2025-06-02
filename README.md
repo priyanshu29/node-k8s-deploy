@@ -84,3 +84,133 @@ This repo is only for deployment manifests. The source code for the Node.js app 
 
 🧑‍💻 Author  
 Priyanshu Tiwari
+
+
+
+
+
+
+
+
+# prometheus/prometheus.yml
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'node-monitor'
+
+rule_files:
+  - "alert.rules.yml"
+
+scrape_configs:
+  - job_name: 'node-app'
+    static_configs:
+      - targets: ['host.docker.internal:3001']
+
+---
+# prometheus/alert.rules.yml
+
+groups:
+  - name: example-alert
+    rules:
+      - alert: HighRequestLatency
+        expr: http_request_duration_seconds_mean5m > 0.5
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High request latency"
+
+---
+# grafana/provisioning/datasources/datasource.yml
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+
+---
+# grafana/provisioning/dashboards/dashboards.yml
+
+dashboardProviders:
+  - name: 'default'
+    orgId: 1
+    folder: ''
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    options:
+      path: /var/lib/grafana/dashboards
+
+---
+# grafana/dashboards/node-app-dashboard.json
+
+{
+  "dashboard": {
+    "id": null,
+    "uid": null,
+    "title": "Node.js App Metrics",
+    "tags": [],
+    "timezone": "browser",
+    "panels": [
+      {
+        "type": "graph",
+        "title": "HTTP Request Duration",
+        "targets": [
+          {
+            "expr": "http_request_duration_seconds_mean5m",
+            "legendFormat": "duration"
+          }
+        ],
+        "datasource": "Prometheus"
+      }
+    ],
+    "schemaVersion": 16,
+    "version": 1,
+    "refresh": "10s"
+  }
+}
+
+---
+# README.md
+
+# Observability Monitoring
+
+This setup uses Prometheus and Grafana to monitor a Node.js application running on Minikube in WSL.
+
+## Components
+
+- **Prometheus**: Metrics scraping and alerting
+- **Grafana**: Visualization dashboards
+
+## Setup
+
+```bash
+docker compose up -d
+```
+
+## Access
+
+- Prometheus: http://localhost:9090
+- Grafana: http://localhost:3000 (admin/admin)
+
+## Dashboards & Alerts
+
+- Check Prometheus targets tab for service discovery
+- Grafana auto-loads the Node.js dashboard
+- Prometheus alerts when HTTP request latency exceeds threshold
+
+## Screenshots
+
+Add these to the `screenshots/` folder:
+- prometheus-targets.png
+- grafana-dashboard.png
+- alert-setup.png
+
+## Notes
+
+Ensure your Node.js app exposes metrics on port 3001 or adjust the Prometheus config accordingly.
+
