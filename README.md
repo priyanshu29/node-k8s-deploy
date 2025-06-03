@@ -88,6 +88,70 @@ Priyanshu Tiwari
 
 
 
+{
+  "__inputs": [],
+  "__requires": [],
+  "title": "Node.js Metrics Dashboard",
+  "timezone": "browser",
+  "schemaVersion": 30,
+  "version": 1,
+  "refresh": "10s",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Total Requests",
+      "datasource": "prometheus-1",
+      "targets": [
+        {
+          "expr": "node_app_requests_total",
+          "format": "time_series"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }
+    },
+    {
+      "type": "stat",
+      "title": "CPU Usage (User)",
+      "datasource": "prometheus-1",
+      "targets": [
+        {
+          "expr": "process_cpu_user_seconds_total",
+          "format": "time_series"
+        }
+      ],
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 }
+    },
+    {
+      "type": "stat",
+      "title": "Memory Usage",
+      "datasource": "prometheus-1",
+      "targets": [
+        {
+          "expr": "process_resident_memory_bytes",
+          "format": "time_series"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 4, "w": 6, "h": 4 }
+    },
+    {
+      "type": "stat",
+      "title": "Event Loop Lag (mean)",
+      "datasource": "prometheus-1",
+      "targets": [
+        {
+          "expr": "nodejs_eventloop_lag_mean_seconds",
+          "format": "time_series"
+        }
+      ],
+      "gridPos": { "x": 6, "y": 4, "w": 6, "h": 4 }
+    }
+  ]
+}
+
+
+
+
+
 
 
 
