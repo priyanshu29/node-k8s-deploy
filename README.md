@@ -84,3 +84,44 @@ This repo is only for deployment manifests. The source code for the Node.js app 
 
 🧑‍💻 Author  
 Priyanshu Tiwari
+{
+  "dashboard": {
+    "id": null,
+    "uid": null,
+    "title": "Node.js Metrics",
+    "tags": ["nodejs", "prometheus"],
+    "timezone": "browser",
+    "schemaVersion": 30,
+    "version": 1,
+    "refresh": "5s",
+    "panels": [
+      {
+        "type": "stat",
+        "title": "Total Requests",
+        "targets": [
+          {
+            "expr": "node_app_requests_total",
+            "format": "time_series"
+          }
+        ],
+        "datasource": "prometheus-1",
+        "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }
+      },
+      {
+        "type": "stat",
+        "title": "CPU Time (User)",
+        "targets": [
+          {
+            "expr": "process_cpu_user_seconds_total",
+            "format": "time_series"
+          }
+        ],
+        "datasource": "prometheus-1",
+        "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 }
+      }
+    ]
+  }
+}
+
+
+
