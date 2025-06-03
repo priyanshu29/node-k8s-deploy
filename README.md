@@ -86,58 +86,19 @@ This repo is only for deployment manifests. The source code for the Node.js app 
 Priyanshu Tiwari
 
 
+const http = require('http');
 
-version: '3.8'
+const server = http.createServer((req, res) => {
+  if (req.url === '/metrics') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('node_custom_metric 1\n'); // <-- Must be in Prometheus format
+  } else {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Hello from Node.js App!\n');
+  }
+});
 
-services:
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml
-    ports:
-      - "9090:9090"
-    networks:
-      - docker_cicd_net
+server.listen(3000, '0.0.0.0', () => {
+  console.log('Server running on http://localhost:3000');
+});
 
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
-      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
-      - ./grafana/dashboards:/var/lib/grafana/dashboards
-    depends_on:
-      - prometheus
-    networks:
-      - docker_cicd_net
-
-networks:
-  docker_cicd_net:
-    external: true
-
-
-------------------
-global:
-  scrape_interval: 15s
-  evaluation_interval: 15s
-  external_labels:
-    monitor: 'node-monitor'
-
-rule_files:
-  - "alert.rules.yml"
-
-scrape_configs:
-  - job_name: 'node-app'
-    static_configs:
-      - targets: ['172.24.96.1:31000']
-  -----------------
-
-  ip addr show eth0 | grep "inet "
-    inet 172.24.105.197/20 brd 172.24.111.255 scope global eth0
