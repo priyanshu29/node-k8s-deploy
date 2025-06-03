@@ -86,4 +86,85 @@ This repo is only for deployment manifests. The source code for the Node.js app 
 Priyanshu Tiwari
 
 
+version: '3.8'
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml
+    ports:
+      - "9090:9090"
+    network_mode: "host"
+    # networks:
+    #   - docker_cicd_net
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    network_mode: "host"
+    # ports:
+    #   - "3000:3000"
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+volumes:
+  grafana-data:
+    # networks:
+    #   - docker_cicd_net
+
+networks:
+  docker_cicd_net:
+    external: true
+=====================================
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'node-monitor'
+
+rule_files:
+  - "alert.rules.yml"
+
+scrape_configs:
+  - job_name: 'node-app'
+    static_configs:
+      - targets: ['192.168.49.2:30080']
+=========================================
+
+
+groups:
+  - name: Node.js Alerts
+    rules:
+      - alert: HighMemoryUsage
+        expr: process_resident_memory_bytes > 100000000  # ~100MB
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage on Node.js app"
+          description: "Node.js memory is above 100MB for more than 1 minute."
+
+      - alert: HighCPUUsage
+        expr: rate(process_cpu_seconds_total[1m]) > 0.5
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on Node.js app"
+          description: "Node.js CPU usage > 50% for more than 1 minute."
+		  
+=============================================================================
+
+
+
 
