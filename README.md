@@ -86,24 +86,4 @@ This repo is only for deployment manifests. The source code for the Node.js app 
 Priyanshu Tiwari
 
 
-groups:
-  - name: Node.js Alerts
-    rules:
-      - alert: HighMemoryUsage
-        expr: process_resident_memory_bytes > 100000000  # ~100MB
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          summary: "High memory usage on Node.js app"
-          description: "Node.js memory is above 100MB for more than 1 minute."
-
-      - alert: HighCPUUsage
-        expr: rate(process_cpu_seconds_total[1m]) > 0.5
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          summary: "High CPU usage on Node.js app"
-          description: "Node.js CPU usage > 50% for more than 1 minute."
 
