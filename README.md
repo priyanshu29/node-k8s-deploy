@@ -86,74 +86,24 @@ This repo is only for deployment manifests. The source code for the Node.js app 
 Priyanshu Tiwari
 
 
+groups:
+  - name: Node.js Alerts
+    rules:
+      - alert: HighMemoryUsage
+        expr: process_resident_memory_bytes > 100000000  # ~100MB
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage on Node.js app"
+          description: "Node.js memory is above 100MB for more than 1 minute."
 
-
-{
-  "__inputs": [],
-  "__requires": [],
-  "title": "Node.js Metrics Dashboard",
-  "timezone": "browser",
-  "schemaVersion": 30,
-  "version": 1,
-  "refresh": "10s",
-  "panels": [
-    {
-      "type": "stat",
-      "title": "Total Requests",
-      "datasource": "prometheus-1",
-      "targets": [
-        {
-          "expr": "node_app_requests_total",
-          "format": "time_series"
-        }
-      ],
-      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }
-    },
-    {
-      "type": "stat",
-      "title": "CPU Usage (User)",
-      "datasource": "prometheus-1",
-      "targets": [
-        {
-          "expr": "process_cpu_user_seconds_total",
-          "format": "time_series"
-        }
-      ],
-      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 }
-    },
-    {
-      "type": "stat",
-      "title": "Memory Usage",
-      "datasource": "prometheus-1",
-      "targets": [
-        {
-          "expr": "process_resident_memory_bytes",
-          "format": "time_series"
-        }
-      ],
-      "gridPos": { "x": 0, "y": 4, "w": 6, "h": 4 }
-    },
-    {
-      "type": "stat",
-      "title": "Event Loop Lag (mean)",
-      "datasource": "prometheus-1",
-      "targets": [
-        {
-          "expr": "nodejs_eventloop_lag_mean_seconds",
-          "format": "time_series"
-        }
-      ],
-      "gridPos": { "x": 6, "y": 4, "w": 6, "h": 4 }
-    }
-  ]
-}
-
-
-
-
-
-
-
-
-
+      - alert: HighCPUUsage
+        expr: rate(process_cpu_seconds_total[1m]) > 0.5
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on Node.js app"
+          description: "Node.js CPU usage > 50% for more than 1 minute."
 
