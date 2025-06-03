@@ -86,3 +86,24 @@ This repo is only for deployment manifests. The source code for the Node.js app 
 Priyanshu Tiwari
 
 
+global:
+  resolve_timeout: 1m
+
+route:
+  receiver: 'default-receiver'
+  group_wait: 10s
+  group_interval: 30s
+  repeat_interval: 1h
+
+receivers:
+  - name: 'default-receiver'
+    email_configs:
+      - to: 'your-email@example.com'
+        from: 'alertmanager@example.com'
+        smarthost: 'smtp.example.com:587'
+        auth_username: 'your-username'
+        auth_password: 'your-password'
+        auth_identity: 'your-username'
+        require_tls: true
+
+
