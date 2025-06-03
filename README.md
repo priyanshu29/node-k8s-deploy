@@ -86,33 +86,84 @@ This repo is only for deployment manifests. The source code for the Node.js app 
 Priyanshu Tiwari
 
 
+{
+    "name": "node-app",
+    "version": "1.0.0",
+    "description": "Simple Node.js App",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "prom-client": "15.1.3"
+    }
+}
 
-const http = require('http');
-const client = require('prom-client');
 
-const register = new client.Registry();
-client.collectDefaultMetrics({ register });
+-------------------
 
-const counter = new client.Counter({
-  name: 'node_app_requests_total',
-  help: 'Total number of requests',
-});
-register.registerMetric(counter);
+# Using image
+FROM node:18-slim
 
-const server = http.createServer(async (req, res) => {
-  if (req.url === '/metrics') {
-    res.setHeader('Content-Type', register.contentType);
-    res.end(await register.metrics());
-  } else {
-    counter.inc();
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('Hello from Node.js App!\n');
-  }
-});
+# Create app directory
+WORKDIR /app
 
-server.listen(3000, '0.0.0.0', () => {
-  console.log('Server running on http://localhost:3000');
-});
+# Copy Files
+COPY package*.json ./
+COPY server.js .
+
+# Install dependencies
+RUN npm install
+
+# Expose port
+EXPOSE 3000
+
+# Start the app
+CMD ["npm", "start"]
+-------------------------------------------
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app:  node-app
+  template:
+    metadata:
+      labels:
+        app: node-app
+    spec:
+      containers:
+      - name: node-app
+        image: priyanshu0998/node-app:22
+        ports:
+        - containerPort: 3000
+
+---------------------------------------
+
+apiVersion: v1 
+kind: Service
+metadata:
+  name: node-app-service
+spec:
+  selector:
+    app: node-app
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+    nodePort: 30080
+
+
+
+
+
+
+
+
 
 
